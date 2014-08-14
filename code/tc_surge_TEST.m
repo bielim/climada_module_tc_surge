@@ -3,7 +3,7 @@ function hazard=tc_surge_TEST(force_recalc_ts)
 % NAME:
 %   tc_surge_TEST
 % PURPOSE:
-%   TEST the tropical cyclone (TC) storm surge (TS) raw hazard creation
+%   TEST the tropical cyclone (TC) storm surge (TS) hazard creation
 %   1) get centroids for the test country (eg Bangladesh, see PARAMETERS)
 %      if they do not exist, try to run GDP_entity in order to create them
 %   2) create TC wind hazard event set
@@ -68,8 +68,7 @@ TEST_probabilistic=1; % default=0, since fast to check
 % evaluate and store storm surge heights at)
 % see climada_create_GDP_entity to create centroids file
 centroids_file=[climada_global.additional_dir filesep 'tc_surge' filesep ...
-    'data' filesep 'system'   filesep 'Barisal_BATI_centroids.mat'];
-%%%    'data' filesep 'system'   filesep TEST_country_name '_centroids.mat'];
+    'data' filesep 'system'   filesep TEST_country_name '_centroids.mat'];
 % if the centroids are generated in the present code, the entitity is also stored (not needed for this TEST)
 entity_file=   [climada_global.additional_dir filesep 'tc_surge' filesep ...
     'data' filesep 'entities' filesep TEST_country_name '_assets.mat'];
@@ -86,7 +85,7 @@ unisys_file=   [climada_global.additional_dir filesep 'tc_surge' filesep ...
 % -------------------------
 % define the hazard event set file to store the TEST hazard event set
 hazard_set_file_tc=[climada_global.additional_dir filesep 'tc_surge' filesep 'data' filesep TEST_country_name '_hazard_TC.mat'];
-hazard_set_file_ts=[climada_global.additional_dir filesep 'tc_surge' filesep 'data' filesep TEST_country_name '_hazard_TS_HR.mat'];
+hazard_set_file_ts=[climada_global.additional_dir filesep 'tc_surge' filesep 'data' filesep TEST_country_name '_hazard_TS.mat'];
 
 
 % Calculations start
@@ -173,7 +172,7 @@ fprintf('TC: max(max(hazard.arr))=%f\n',full(max(max(hazard.arr)))); % a kind of
 % show biggest TC event
 [~,max_tc_pos]=max(sum(hazard.arr,2)); % the maximum TC intensity
 
-main_fig=figure('Name','tc surge raw TEST','Position',[89 223 1014 413],'Color',[1 1 1]);
+main_fig=figure('Name','tc surge TEST','Position',[89 223 1014 413],'Color',[1 1 1]);
 subplot(1,2,1)
 values=full(hazard.arr(max_tc_pos,:)); % get one TC footprint
 centroids.Longitude=hazard.lon; % as the gridding routine needs centroids

@@ -1,1 +1,1 @@
-this folder contains the centroids
+this folder contains the centroids (empty upon installation)

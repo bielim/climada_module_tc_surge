@@ -1,0 +1,1 @@
+this folder contains the entities (empty upon installation)
