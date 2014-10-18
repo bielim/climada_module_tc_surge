@@ -37,5 +37,9 @@ hazard=[]; % init output
 if ~exist('hazard_TC','var'),hazard=[];end
 if ~exist('hazard_set_file','var'),hazard_set_file=[];end
 if ~exist('suppress_plots','var'),suppress_plots=0;end
+
 hazard=tc_surge_hazard_create(hazard_TC,hazard_set_file,suppress_plots);
+
 return
+
+

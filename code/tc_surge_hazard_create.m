@@ -88,14 +88,14 @@ bathy_coords=[centroids_rect(1)-bb centroids_rect(2)+bb centroids_rect(3)-bb cen
 % file the bathymetry gets stored in ( might not be used later on, but
 % saved to speed up re-creation of the TS hazard event set
 [~,fN]=fileparts(hazard_set_file);
-Bathymetry_file=[climada_global.additional_dir filesep 'tc_surge' filesep ...
+Bathymetry_file=[climada_global.modules_dir filesep 'tc_surge' filesep ...
     'data' filesep fN '_bathy.mat'];
 
 if ~exist(Bathymetry_file,'file')
     
     if ~exist('etopo_get','file')
         % safety to inform the user in case he misses the ETOPO module
-        fprintf('ERROR: no etopo_get function found. Please install the climada etopo module\n');
+        cprintf([1,0.5,0],'ERROR: no etopo_get function found. Please download from github and install the climada etopo module\nhttps://github.com/davidnbresch/climada_module_etopo\n');
         hazard=[];
         return
     end
@@ -139,8 +139,8 @@ hazard.comment=sprintf('TS hazard event set, generated %s',datestr(now));
 
 % map windspeed onto surge height (the CORE_CONVERSION, see at botton of file, too)
 % ===============================
-arr_nonzero=find(hazard.arr); % to avoid de-sparsify all elements
-hazard.arr(arr_nonzero)=0.1023*(max(hazard.arr(arr_nonzero)-26.8224,0))+1.8288; % m/s converted to m surge height
+arr_nonzero=find(hazard.intensity); % to avoid de-sparsify all elements
+hazard.intensity(arr_nonzero)=0.1023*(max(hazard.intensity(arr_nonzero)-26.8224,0))+1.8288; % m/s converted to m surge height
 
 % grid bathymetry to centroids (convert n x m BATI to vectors in call)
 xx=double(reshape(BATI.x,numel(BATI.x),1));
@@ -153,8 +153,8 @@ hazard.elev=max(hazard.bathy,0); % only points above sea level
 % subtract elevation above sea level from surge height
 t0       = clock;
 mod_step = 10; % first time estimate after 10 tracks, then every 100
-n_events=size(hazard.arr,1);
-n_centroids=size(hazard.arr,2);
+n_events=size(hazard.intensity,1);
+n_centroids=size(hazard.intensity,2);
 
 % as the innermost loop is vectorized, it shall be the one repeated most:
 
@@ -164,8 +164,8 @@ if n_events<n_centroids % loop over events, since less events than centroids
     fprintf('%s (updating waitbar with estimation of time remaining every 100th event)\n',msgstr);
     h        = waitbar(0,msgstr);
     for event_i=1:n_events
-        arr_i=find(hazard.arr(event_i,:)); % to avoid de-sparsify all elements
-        hazard.arr(event_i,arr_i)=max(hazard.arr(event_i,arr_i)-hazard.elev(arr_i),0);
+        arr_i=find(hazard.intensity(event_i,:)); % to avoid de-sparsify all elements
+        hazard.intensity(event_i,arr_i)=max(hazard.intensity(event_i,arr_i)-hazard.elev(arr_i),0);
         
         if mod(event_i,mod_step)==0
             mod_step = 100;
@@ -188,8 +188,8 @@ else % loop over centroids, since less centroids than events
     fprintf('%s (updating waitbar with estimation of time remaining every 100th centroid)\n',msgstr);
     h        = waitbar(0,msgstr);
     for centroid_i=1:n_centroids
-        arr_i=find(hazard.arr(:,centroid_i)); % to avoid de-sparsify all elements
-        hazard.arr(arr_i,centroid_i)=max(hazard.arr(arr_i,centroid_i)-hazard.elev(centroid_i),0);
+        arr_i=find(hazard.intensity(:,centroid_i)); % to avoid de-sparsify all elements
+        hazard.intensity(arr_i,centroid_i)=max(hazard.intensity(arr_i,centroid_i)-hazard.elev(centroid_i),0);
         
         if mod(centroid_i,mod_step)==0
             mod_step = 100;
@@ -212,7 +212,7 @@ close(h); % dispose waitbar
 if isfield(hazard,'filename'),hazard.filename_source=hazard.filename;end
 hazard.filename=hazard_set_file;
 hazard.date=datestr(now);
-hazard.matrix_density=nnz(hazard.arr)/numel(hazard.arr);
+hazard.matrix_density=nnz(hazard.intensity)/numel(hazard.intensity);
 hazard.units='m'; % store the SI unit of the hazard intensity
 if ~isfield(hazard,'orig_event_count') % fix a minor issue with some hazard sets
     if isfield(hazard,'orig_event_flag')
@@ -228,7 +228,7 @@ end
 fprintf('saving TS surge hazard set as %s\n',hazard_set_file);
 save(hazard_set_file,'hazard');
 
-%%fprintf('TS: max(max(hazard.arr))=%f\n',full(max(max(hazard.arr)))); % a kind of easy check
+%%fprintf('TS: max(max(hazard.intensity))=%f\n',full(max(max(hazard.intensity)))); % a kind of easy check
 
 if ~suppress_plots,climada_hazard_plot(hazard,0);end % show max surge over ALL events
 

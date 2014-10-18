@@ -47,10 +47,10 @@ plot_centroids=1; %=1 (yes) or =0 (no)
 
 if event_i<0
     % search for i-thlargest event
-    event_sum=sum(hazard.arr,2);
+    event_sum=sum(hazard.intensity,2);
     [~,sorted_i]=sort(event_sum);
     event_ii=sorted_i(length(sorted_i)+event_i+1);
-    surge_height=full(hazard.arr(event_ii,:)); % extract one event
+    surge_height=full(hazard.intensity(event_ii,:)); % extract one event
     if event_i<-1
         title_str=sprintf('%s %i-largest event (%i)',hazard.peril_ID,-event_i,event_ii);
     else
@@ -61,10 +61,10 @@ if event_i<0
         fprintf('%s, %4.4i%2.2i%2.2i, event %i\n',hazard.name{event_ii},hazard.yyyy(event_ii),hazard.mm(event_ii),hazard.dd(event_ii),event_ii);
     end
 elseif event_i==0
-    surge_height=full(max(hazard.arr)); % max intensity at each point
+    surge_height=full(max(hazard.intensity)); % max intensity at each point
     title_str=sprintf('%s max intensity at each centroid',hazard.peril_ID);
 else
-    surge_height=full(hazard.arr(event_i,:)); % extract one event
+    surge_height=full(hazard.intensity(event_i,:)); % extract one event
     title_str=sprintf('%s event %i',hazard.peril_ID,event_i);
     % plot some further info to sdout:
     if (isfield(hazard,'name') && isfield(hazard,'yyyy')) && (isfield(hazard,'mm') && isfield(hazard,'dd'))

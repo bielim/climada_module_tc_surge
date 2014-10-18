@@ -67,16 +67,16 @@ TEST_probabilistic=1; % default=0, since fast to check
 % define the file with centroids (geo-locations of the points we later
 % evaluate and store storm surge heights at)
 % see climada_create_GDP_entity to create centroids file
-centroids_file=[climada_global.additional_dir filesep 'tc_surge' filesep ...
+centroids_file=[climada_global.modules_dir filesep 'tc_surge' filesep ...
     'data' filesep 'system'   filesep TEST_country_name '_centroids.mat'];
 % if the centroids are generated in the present code, the entitity is also stored (not needed for this TEST)
-entity_file=   [climada_global.additional_dir filesep 'tc_surge' filesep ...
+entity_file=   [climada_global.modules_dir filesep 'tc_surge' filesep ...
     'data' filesep 'entities' filesep TEST_country_name '_assets.mat'];
 %
 % 2) tropical cyclone (TC) tracks
 % -------------------------------
 % set UNISYS TC track data file (for info, see climada_tc_read_unisys_database)
-unisys_file=   [climada_global.additional_dir filesep 'tc_surge' filesep ...
+unisys_file=   [climada_global.modules_dir filesep 'tc_surge' filesep ...
     'data' filesep 'tc_tracks' filesep tc_track_file];
 %
 % 3) bathymetry parameters set in tc_surge_hazard_create
@@ -84,8 +84,8 @@ unisys_file=   [climada_global.additional_dir filesep 'tc_surge' filesep ...
 % 4) surge hazard event set
 % -------------------------
 % define the hazard event set file to store the TEST hazard event set
-hazard_set_file_tc=[climada_global.additional_dir filesep 'tc_surge' filesep 'data' filesep TEST_country_name '_hazard_TC.mat'];
-hazard_set_file_ts=[climada_global.additional_dir filesep 'tc_surge' filesep 'data' filesep TEST_country_name '_hazard_TS.mat'];
+hazard_set_file_tc=[climada_global.modules_dir filesep 'tc_surge' filesep 'data' filesep TEST_country_name '_hazard_TC.mat'];
+hazard_set_file_ts=[climada_global.modules_dir filesep 'tc_surge' filesep 'data' filesep TEST_country_name '_hazard_TS.mat'];
 
 
 % Calculations start
@@ -167,14 +167,14 @@ else
     load(hazard_set_file_tc);
 end
 
-fprintf('TC: max(max(hazard.arr))=%f\n',full(max(max(hazard.arr)))); % a kind of easy check
+fprintf('TC: max(max(hazard.intensity))=%f\n',full(max(max(hazard.intensity)))); % a kind of easy check
 
 % show biggest TC event
-[~,max_tc_pos]=max(sum(hazard.arr,2)); % the maximum TC intensity
+[~,max_tc_pos]=max(sum(hazard.intensity,2)); % the maximum TC intensity
 
 main_fig=figure('Name','tc surge TEST','Position',[89 223 1014 413],'Color',[1 1 1]);
 subplot(1,2,1)
-values=full(hazard.arr(max_tc_pos,:)); % get one TC footprint
+values=full(hazard.intensity(max_tc_pos,:)); % get one TC footprint
 centroids.Longitude=hazard.lon; % as the gridding routine needs centroids
 centroids.Latitude=hazard.lat;
 [X, Y, gridded_VALUE] = climada_gridded_VALUE(values,centroids);
@@ -206,7 +206,7 @@ hazard=tc_surge_hazard_create(hazard,hazard_set_file_ts);
 % show biggest TS event
 figure(main_fig);
 subplot(1,2,2)
-values=full(hazard.arr(max_tc_pos,:)); % get one tc footprint
+values=full(hazard.intensity(max_tc_pos,:)); % get one tc footprint
 centroids.Longitude=hazard.lon; % as the gridding routine needs centroids
 centroids.Latitude=hazard.lat;
 [X, Y, gridded_VALUE] = climada_gridded_VALUE(values,centroids);
