@@ -38,7 +38,7 @@ function hazard=tc_surge_hazard_create(hazard,hazard_set_file,suppress_plots)
 %       modified to create the output hazard
 % MODIFICATION HISTORY:
 % David N. Bresch, david.bresch@gmail.com, 20140421
-% David N. Bresch, david.bresch@gmail.com, 20141017, module path relative
+% David N. Bresch, david.bresch@gmail.com, 20141017
 %-
 
 global climada_global

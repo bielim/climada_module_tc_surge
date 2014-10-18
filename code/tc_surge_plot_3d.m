@@ -74,7 +74,7 @@ end
 if isfield(hazard,'units'),title_str=[title_str ' [' hazard.units ']'];end % add units
 
 if isfield(hazard,'elev')
-    surge_height+hazard.elev; % add elevation, since surge height is relative to terrain
+    surge_height=surge_height+hazard.elev; % add elevation, since surge height is relative to terrain
 else
     fprintf('WARNING: no elevation at centroids found, surge surface might not be correct\n');
 end 
