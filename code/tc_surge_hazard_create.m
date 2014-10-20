@@ -223,8 +223,6 @@ if ~isfield(hazard,'orig_event_count') % fix a minor issue with some hazard sets
     else
         fprintf('WARNING: no field hazard.orig_event_flag\n')
     end
-else
-    fprintf('WARNING: no field hazard.orig_event_count\n')
 end
 
 fprintf('saving TS surge hazard set as %s\n',hazard_set_file);
