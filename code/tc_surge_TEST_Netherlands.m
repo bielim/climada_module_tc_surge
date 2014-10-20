@@ -1,9 +1,9 @@
-function hazard=tc_surge_TEST_Netherlands(force_recalc_ts)
+function hazard=tc_surge_TEST_Netherlands
 % climada
 % NAME:
 %   tc_surge_TEST
 % PURPOSE:
-%   See Netherlands_tc_surge_TEST for the real TEST environment
+%   See tc_surge_TEST for the real TEST environment
 %
 %   A kind of silly test, just to see whether it all works with just one or
 %   just ten tracks...
@@ -27,10 +27,6 @@ function hazard=tc_surge_TEST_Netherlands(force_recalc_ts)
 %   tc_surge_TEST
 % INPUTS:
 % OPTIONAL INPUT PARAMETERS:
-%   force_recalc_ts: if =1, recalculate TS hazard set, even if it exists
-%       (good for TEST while editing the code)
-%       all other output needs to be deleted in order to be recalculated 
-%       (e.g. the TC hazard event set)
 % OUTPUTS:
 %   writes a couple files, such as entity, assets, bathymetry and a
 %       hazard event set
@@ -44,10 +40,9 @@ hazard_tc=[]; % init output
 global climada_global
 if ~climada_init_vars,return;end % init/import global variables
 
-% poor man's version to check arguments
-if ~exist('force_recalc_ts','var'),force_recalc_ts=0;end
-
 % PARAMETERS
+%
+module_data_dir=[fileparts(fileparts(mfilename('fullpath'))) filesep 'data'];
 %
 % in essence, only the TEST country, TEST location, TEST_probabilistic
 % and the TC track set needs to be defined, 
@@ -66,11 +61,9 @@ TEST_probabilistic=1; % default=0, since fast to check
 % define the file with centroids (geo-locations of the points we later
 % evaluate and store storm surge heights at)
 % see climada_create_GDP_entity to create centroids file
-centroids_file=[climada_global.modules_dir filesep 'tc_surge' filesep ...
-    'data' filesep 'system'   filesep TEST_country_name '_centroids.mat'];
+centroids_file=[climada_global.data_dir filesep 'system' filesep TEST_country_name '_centroids.mat'];
 % if the centroids are generated in the present code, the entitity is also stored (not needed for this TEST)
-entity_file=   [climada_global.modules_dir filesep 'tc_surge' filesep ...
-    'data' filesep 'entities' filesep TEST_country_name '_assets.mat'];
+entity_file=   [climada_global.data_dir filesep 'entities' filesep TEST_country_name '_entity.mat'];
 %
 % 2) tropical cyclone (TC) track hard-wired below
 % -----------------------------------------------
@@ -80,8 +73,8 @@ entity_file=   [climada_global.modules_dir filesep 'tc_surge' filesep ...
 % 4) surge hazard event set
 % -------------------------
 % define the hazard event set file to store the TEST hazard event set
-hazard_set_file_tc=[climada_global.modules_dir filesep 'tc_surge' filesep 'data' filesep TEST_country_name '_hazard_TC.mat'];
-hazard_set_file_ts=[climada_global.modules_dir filesep 'tc_surge' filesep 'data' filesep TEST_country_name '_hazard_TS.mat'];
+hazard_set_file_tc=[climada_global.data_dir filesep 'hazards' filesep TEST_country_name '_hazard_TC.mat'];
+hazard_set_file_ts=[climada_global.data_dir filesep 'hazards' filesep TEST_country_name '_hazard_TS.mat'];
 
 % Calculations start
 % ==================
