@@ -52,7 +52,7 @@ if ~exist('suppress_plots','var'),suppress_plots=0;end
 % PARAMETERS
 %
 module_data_dir=[fileparts(fileparts(mfilename('fullpath'))) filesep 'data'];
-
+if ~isdir(module_data_dir),mkdir(fileparts(module_data_dir),'data');end % create the data dir, should it not exist (no further checking)
 
 % prompt for TC hazard event set if not given
 if isempty(hazard) % local GUI
@@ -154,7 +154,6 @@ hazard.elev=max(hazard.bathy,0); % only points above sea level
 
 % subtract elevation above sea level from surge height
 t0       = clock;
-mod_step = 10; % first time estimate after 10 tracks, then every 100
 n_events=size(hazard.intensity,1);
 n_centroids=size(hazard.intensity,2);
 
@@ -163,8 +162,16 @@ n_centroids=size(hazard.intensity,2);
 if n_events<n_centroids % loop over events, since less events than centroids
     
     msgstr   = sprintf('processing %i events',n_events);
-    fprintf('%s (updating waitbar with estimation of time remaining every 100th event)\n',msgstr);
-    h        = waitbar(0,msgstr);
+    if climada_global.waitbar
+        fprintf('%s (updating waitbar with estimation of time remaining every 100th event)\n',msgstr);
+        h        = waitbar(0,msgstr);
+        set(h,'Name','Hazard TS: tropical cyclones surge');
+        mod_step = 10; % first time estimate after 10 tracks, then every 100
+    else
+        fprintf('%s (waitbar suppressed)\n',msgstr);
+        mod_step=n_events+10;
+    end
+
     for event_i=1:n_events
         arr_i=find(hazard.intensity(event_i,:)); % to avoid de-sparsify all elements
         hazard.intensity(event_i,arr_i)=max(hazard.intensity(event_i,arr_i)-hazard.elev(arr_i),0);
@@ -187,8 +194,16 @@ if n_events<n_centroids % loop over events, since less events than centroids
 else % loop over centroids, since less centroids than events
     
     msgstr   = sprintf('processing %i centroids',n_centroids);
-    fprintf('%s (updating waitbar with estimation of time remaining every 100th centroid)\n',msgstr);
-    h        = waitbar(0,msgstr);
+    if climada_global.waitbar
+        fprintf('%s (updating waitbar with estimation of time remaining every 100th centroid)\n',msgstr);
+        h        = waitbar(0,msgstr);
+        set(h,'Name','Hazard TS: tropical cyclones surge');
+        mod_step = 10; % first time estimate after 10 tracks, then every 100
+    else
+        fprintf('%s (waitbar suppressed)\n',msgstr);
+        mod_step=n_centroids+10;
+    end
+    
     for centroid_i=1:n_centroids
         arr_i=find(hazard.intensity(:,centroid_i)); % to avoid de-sparsify all elements
         hazard.intensity(arr_i,centroid_i)=max(hazard.intensity(arr_i,centroid_i)-hazard.elev(centroid_i),0);
@@ -209,7 +224,7 @@ else % loop over centroids, since less centroids than events
     end % event_i
     
 end
-close(h); % dispose waitbar
+if exist('h','var'),close(h);end % dispose waitbar
 
 if isfield(hazard,'filename'),hazard.filename_source=hazard.filename;end
 hazard.filename=hazard_set_file;
