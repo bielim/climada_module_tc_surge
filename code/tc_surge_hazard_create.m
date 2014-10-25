@@ -1,4 +1,4 @@
-function hazard=tc_surge_hazard_create(hazard,hazard_set_file,suppress_plots)
+function hazard=tc_surge_hazard_create(hazard,hazard_set_file,check_plots)
 % climada storm surge TS hazard event set
 % NAME:
 %   tc_surge_hazard_create
@@ -29,8 +29,8 @@ function hazard=tc_surge_hazard_create(hazard,hazard_set_file,suppress_plots)
 %   hazard_set_file: the name of the newly created storm surge (TS) hazard
 %       event set
 %       > promted for if not given
-%   suppress_plots: =1, do not show any figures, =o: show plots (default)
 % OPTIONAL INPUT PARAMETERS:
+%   check_plots: =1, do show check plots, =0: no plots (default)
 % OUTPUTS:
 %   hazard: a hazard event set, see core climada doc
 %       also written to a .mat file (see hazard_set_file)
@@ -47,7 +47,7 @@ if ~climada_init_vars,return;end % init/import global variables
 % poor man's version to check arguments
 if ~exist('hazard','var'),hazard=[];end
 if ~exist('hazard_set_file','var'),hazard_set_file=[];end
-if ~exist('suppress_plots','var'),suppress_plots=0;end
+if ~exist('check_plots','var'),check_plots=0;end
 
 % PARAMETERS
 %
@@ -106,7 +106,7 @@ if ~exist(Bathymetry_file,'file')
     fprintf('saving bathymetry as %s (you might later delete this file)\n',Bathymetry_file);
     save(Bathymetry_file,'BATI');
     
-    if ~suppress_plots
+    if check_plots
         figure('Name','Bathymetry','Color',[1 1 1]);
         pcolor(BATI.x,BATI.y,BATI.h)
         hold on
@@ -245,7 +245,7 @@ save(hazard_set_file,'hazard');
 
 %%fprintf('TS: max(max(hazard.intensity))=%f\n',full(max(max(hazard.intensity)))); % a kind of easy check
 
-if ~suppress_plots,climada_hazard_plot(hazard,0);end % show max surge over ALL events
+if check_plots,climada_hazard_plot(hazard,0);end % show max surge over ALL events
 
 return
 

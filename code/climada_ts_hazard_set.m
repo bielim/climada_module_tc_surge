@@ -1,4 +1,4 @@
-function hazard=climada_ts_hazard_set(hazard_TC,hazard_set_file,suppress_plots)
+function hazard=climada_ts_hazard_set(hazard_TC,hazard_set_file,check_plots)
 % climada storm surge TS hazard event set
 % NAME:
 %   climada_ts_hazard_set
@@ -26,8 +26,8 @@ function hazard=climada_ts_hazard_set(hazard_TC,hazard_set_file,suppress_plots)
 %   hazard_set_file: the name of the newly created storm surge (TS) hazard
 %       event set
 %       > promted for if not given
-%   suppress_plots: =1, do not show any figures, =o: show plots (default)
 % OPTIONAL INPUT PARAMETERS:
+%   check_plots: =1, do show check plots, =0: no plots (default)
 % OUTPUTS:
 %   hazard: a hazard event set, see climada doc
 % MODIFICATION HISTORY:
@@ -36,9 +36,9 @@ function hazard=climada_ts_hazard_set(hazard_TC,hazard_set_file,suppress_plots)
 hazard=[]; % init output
 if ~exist('hazard_TC','var'),hazard=[];end
 if ~exist('hazard_set_file','var'),hazard_set_file=[];end
-if ~exist('suppress_plots','var'),suppress_plots=0;end
+if ~exist('check_plots','var'),check_plots=0;end
 
-hazard=tc_surge_hazard_create(hazard_TC,hazard_set_file,suppress_plots);
+hazard=tc_surge_hazard_create(hazard_TC,hazard_set_file,check_plots);
 
 return
 
