@@ -1,4 +1,4 @@
-function hazard=tc_surge_hazard_create(hazard,hazard_set_file,check_plots)
+function hazard=tc_surge_hazard_create(hazard,hazard_set_file,save_bathymetry_flag,check_plots)
 % climada storm surge TS hazard event set
 % NAME:
 %   tc_surge_hazard_create
@@ -19,7 +19,7 @@ function hazard=tc_surge_hazard_create(hazard,hazard_set_file,check_plots)
 %   see tc_surge_TEST for a testbed for this code
 %
 % CALLING SEQUENCE:
-%   hazard=tc_surge_hazard_create(hazard,hazard_set_file)
+%   hazard=tc_surge_hazard_create(hazard,hazard_set_file,save_bathymetry_flag,check_plot)
 % EXAMPLE:
 %   hazard=tc_surge_hazard_create
 % INPUTS:
@@ -30,6 +30,8 @@ function hazard=tc_surge_hazard_create(hazard,hazard_set_file,check_plots)
 %       event set
 %       > promted for if not given
 % OPTIONAL INPUT PARAMETERS:
+%   save_bathymetry_flag: if =1, save bathymetry in a .mat file (speeds up
+%       subsequent calls), =0 do not save bathymetry (default)
 %   check_plots: =1, do show check plots, =0: no plots (default)
 % OUTPUTS:
 %   hazard: a hazard event set, see core climada doc
@@ -39,6 +41,7 @@ function hazard=tc_surge_hazard_create(hazard,hazard_set_file,check_plots)
 % MODIFICATION HISTORY:
 % David N. Bresch, david.bresch@gmail.com, 20140421
 % David N. Bresch, david.bresch@gmail.com, 20141017, module path relative
+% David N. Bresch, david.bresch@gmail.com, 20141026, save_bathymetry_flag
 %-
 
 global climada_global
@@ -47,6 +50,7 @@ if ~climada_init_vars,return;end % init/import global variables
 % poor man's version to check arguments
 if ~exist('hazard','var'),hazard=[];end
 if ~exist('hazard_set_file','var'),hazard_set_file=[];end
+if ~exist('save_bathymetry_flag','var'),save_bathymetry_flag=0;end
 if ~exist('check_plots','var'),check_plots=0;end
 
 % PARAMETERS
@@ -103,8 +107,10 @@ if ~exist(Bathymetry_file,'file')
     end
     BATI=etopo_get(bathy_coords);
     
-    fprintf('saving bathymetry as %s (you might later delete this file)\n',Bathymetry_file);
-    save(Bathymetry_file,'BATI');
+    if save_bathymetry_flag
+        fprintf('saving bathymetry as %s (you might later delete this file)\n',Bathymetry_file);
+        save(Bathymetry_file,'BATI');
+    end
     
     if check_plots
         figure('Name','Bathymetry','Color',[1 1 1]);

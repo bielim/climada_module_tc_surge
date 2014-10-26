@@ -192,7 +192,7 @@ fprintf('max event %i\n',max_tc_pos);
 % ==================
 % hazard on input: the tropical cyclone (TC) hazard event set
 % hazard on output: the storm surge (TS) hazard event set
-hazard=tc_surge_hazard_create(hazard,hazard_set_file_ts);
+hazard=tc_surge_hazard_create(hazard,hazard_set_file_ts,0,1);
 
 
 % show biggest TS event
