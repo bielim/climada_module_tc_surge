@@ -106,6 +106,7 @@ if ~exist(Bathymetry_file,'file')
         return
     end
     BATI=etopo_get(bathy_coords);
+    if isempty(BATI),hazard=[];return;end % error messages from etopo_get already
     
     if save_bathymetry_flag
         fprintf('saving bathymetry as %s (you might later delete this file)\n',Bathymetry_file);
