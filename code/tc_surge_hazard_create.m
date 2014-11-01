@@ -233,6 +233,11 @@ else % loop over centroids, since less centroids than events
 end
 if exist('h','var'),close(h);end % dispose waitbar
 
+t_elapsed = etime(clock,t0);
+msgstr    = sprintf('generating %i surge fields took %3.2f min (%3.2f sec/event)',n_events,t_elapsed/60,t_elapsed/n_events);
+fprintf('%s\n',msgstr);
+hazard.creation_comment = msgstr;
+
 if isfield(hazard,'filename'),hazard.filename_source=hazard.filename;end
 hazard.filename=hazard_set_file;
 hazard.date=datestr(now);
