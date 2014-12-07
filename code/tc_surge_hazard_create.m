@@ -58,6 +58,11 @@ if ~exist('check_plots','var'),check_plots=0;end
 module_data_dir=[fileparts(fileparts(mfilename('fullpath'))) filesep 'data'];
 if ~isdir(module_data_dir),mkdir(fileparts(module_data_dir),'data');end % create the data dir, should it not exist (no further checking)
 
+if isempty(which('etopo_get'))
+    fprintf('WARNING: install climada module etopo first, see https://github.com/davidnbresch/climada_module_etopo\n');
+    fprintf('code %s continues, but might encounter problems\n',mfilename);
+end
+
 % prompt for TC hazard event set if not given
 if isempty(hazard) % local GUI
     TC_hazard_set_file=[climada_global.data_dir filesep 'hazards' filesep '*.mat'];
