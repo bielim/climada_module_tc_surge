@@ -178,12 +178,12 @@ if n_events<n_centroids % loop over events, since less events than centroids
         fprintf('%s (updating waitbar with estimation of time remaining every 100th event)\n',msgstr);
         h        = waitbar(0,msgstr);
         set(h,'Name','Hazard TS: tropical cyclones surge');
-        mod_step = 10; % first time estimate after 10 tracks, then every 100
     else
         fprintf('%s (waitbar suppressed)\n',msgstr);
-        mod_step=n_events+10;
+        format_str='%s';
     end
-
+    mod_step = 10; % first time estimate after 10 tracks, then every 100
+    
     for event_i=1:n_events
         arr_i=find(hazard.intensity(event_i,:)); % to avoid de-sparsify all elements
         hazard.intensity(event_i,arr_i)=max(hazard.intensity(event_i,arr_i)-hazard.elev(arr_i),0);
@@ -198,7 +198,14 @@ if n_events<n_centroids % loop over events, since less events than centroids
             else
                 msgstr = sprintf('est. %3.1f min left (%i/%i events)',t_projected_sec/60, event_i, n_events);
             end
-            waitbar(event_i/n_events,h,msgstr); % update waitbar
+            
+            if climada_global.waitbar
+                waitbar(event_i/n_events,h,msgstr); % update waitbar
+            else
+                fprintf(format_str,msgstr);
+                format_str=[repmat('\b',1,length(msgstr)) '%s'];
+            end
+            
         end
         
     end % event_i
@@ -210,11 +217,11 @@ else % loop over centroids, since less centroids than events
         fprintf('%s (updating waitbar with estimation of time remaining every 100th centroid)\n',msgstr);
         h        = waitbar(0,msgstr);
         set(h,'Name','Hazard TS: tropical cyclones surge');
-        mod_step = 10; % first time estimate after 10 tracks, then every 100
     else
         fprintf('%s (waitbar suppressed)\n',msgstr);
-        mod_step=n_centroids+10;
+        format_str='%s';
     end
+    mod_step = 10; % first time estimate after 10 tracks, then every 100
     
     for centroid_i=1:n_centroids
         arr_i=find(hazard.intensity(:,centroid_i)); % to avoid de-sparsify all elements
@@ -230,13 +237,23 @@ else % loop over centroids, since less centroids than events
             else
                 msgstr = sprintf('est. %3.1f min left (%i/%i centroids)',t_projected_sec/60, centroid_i, n_centroids);
             end
-            waitbar(centroid_i/n_centroids,h,msgstr); % update waitbar
+            
+            if climada_global.waitbar
+                waitbar(centroid_i/n_centroids,h,msgstr); % update waitbar
+            else
+                fprintf(format_str,msgstr);
+                format_str=[repmat('\b',1,length(msgstr)) '%s'];
+            end
         end
         
     end % event_i
     
 end
-if exist('h','var'),close(h);end % dispose waitbar
+if climada_global.waitbar
+    close(h) % dispose waitbar
+else
+    fprintf(format_str,''); % move carriage to begin of line
+end
 
 t_elapsed = etime(clock,t0);
 msgstr    = sprintf('generating %i surge fields took %3.2f min (%3.2f sec/event)',n_events,t_elapsed/60,t_elapsed/n_events);
