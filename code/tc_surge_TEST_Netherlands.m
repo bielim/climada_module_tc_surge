@@ -125,7 +125,7 @@ if ~exist(hazard_set_file_tc,'file')
     tc_track(1).dd=1:length(tc_track(1).lon);
     tc_track(1).hh=12;
     tc_track(1).TimeStep=tc_track(1).lon*0+24;
-    tc_track(1).nodetime_mat = datenum(tc_track(1).yyyy,tc_track(1).mm,tc_track(1).dd)+tc_track(1).hh/24;
+    tc_track(1).datenum = datenum(tc_track(1).yyyy,tc_track(1).mm,tc_track(1).dd)+tc_track(1).hh/24;
     
     tc_track=climada_tc_equal_timestep(tc_track); % see code, make higher time resolution
     
