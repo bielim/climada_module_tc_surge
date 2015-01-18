@@ -30,7 +30,7 @@ function hazard=tc_surge_hazard_create(hazard,hazard_set_file,elevation_data,che
 %       Note: if hazard.elevation_m exists on input, this elevation
 %       information is used, hence elevation_data is ignored
 %   hazard_set_file: the name of the newly created storm surge (TS) hazard
-%       event set
+%       event set (if ='NO_SAVE', the hazard is just returned, not saved)
 %       > promted for if not given
 % OPTIONAL INPUT PARAMETERS:
 %   elevation_data: if a scalar, take elevation (or bathymetry) from etopo
@@ -317,8 +317,10 @@ if ~isfield(hazard,'orig_event_count') % fix a minor issue with some hazard sets
     end
 end
 
-fprintf('saving TS surge hazard set as %s\n',hazard_set_file);
-save(hazard_set_file,'hazard');
+if ~strcmp(hazard_set_file,'NO_SAVE');
+    fprintf('saving TS surge hazard set as %s\n',hazard_set_file);
+    save(hazard_set_file,'hazard');
+end
 
 %%fprintf('TS: max(max(hazard.intensity))=%f\n',full(max(max(hazard.intensity)))); % a kind of easy check
 
