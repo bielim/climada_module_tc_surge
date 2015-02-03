@@ -96,7 +96,7 @@ else
 end
 
 % prep the region we need
-centroids_rect=[min(centroids.Longitude) max(centroids.Longitude) min(centroids.Latitude) max(centroids.Latitude)];
+centroids_rect=[min(centroids.lon) max(centroids.lon) min(centroids.lat) max(centroids.lat)];
 
 
 % 2) create TC hazard event set
@@ -156,15 +156,15 @@ fprintf('TC: max(max(hazard.intensity))=%f\n',full(max(max(hazard.intensity))));
 main_fig=figure('Name','tc surge raw TEST','Position',[89 223 1014 413],'Color',[1 1 1]);
 subplot(1,2,1)
 values=full(hazard.intensity(max_tc_pos,:)); % get one TC footprint
-centroids.Longitude=hazard.lon; % as the gridding routine needs centroids
-centroids.Latitude=hazard.lat;
+centroids.lon=hazard.lon; % as the gridding routine needs centroids
+centroids.lat=hazard.lat;
 [X, Y, gridded_VALUE] = climada_gridded_VALUE(values,centroids);
 contourf(X, Y, gridded_VALUE,200,'edgecolor','none')
 hold on
-plot(centroids.Longitude,centroids.Latitude,'.r','MarkerSize',1);
+plot(centroids.lon,centroids.lat,'.r','MarkerSize',1);
 if isfield(centroids,'onLand')
     water_points=find(centroids.onLand==0);
-    plot(centroids.Longitude(water_points),centroids.Latitude(water_points),'.b','MarkerSize',1);
+    plot(centroids.lon(water_points),centroids.lat(water_points),'.b','MarkerSize',1);
 end
 box on
 climada_plot_world_borders
@@ -185,15 +185,15 @@ hazard=tc_surge_hazard_create(hazard,hazard_set_file_ts);
 figure(main_fig);
 subplot(1,2,2)
 values=full(hazard.intensity(max_tc_pos,:)); % get one tc footprint
-centroids.Longitude=hazard.lon; % as the gridding routine needs centroids
-centroids.Latitude=hazard.lat;
+centroids.lon=hazard.lon; % as the gridding routine needs centroids
+centroids.lat=hazard.lat;
 [X, Y, gridded_VALUE] = climada_gridded_VALUE(values,centroids);
 contourf(X, Y, gridded_VALUE,200,'edgecolor','none')
 hold on
-plot(centroids.Longitude,centroids.Latitude,'.r','MarkerSize',1);
+plot(centroids.lon,centroids.lat,'.r','MarkerSize',1);
 if isfield(centroids,'onLand')
     water_points=find(centroids.onLand==0);
-    plot(centroids.Longitude(water_points),centroids.Latitude(water_points),'.b','MarkerSize',1);
+    plot(centroids.lon(water_points),centroids.lat(water_points),'.b','MarkerSize',1);
 end
 box on
 climada_plot_world_borders
